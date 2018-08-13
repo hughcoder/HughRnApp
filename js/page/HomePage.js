@@ -9,7 +9,7 @@ import { StyleSheet, Text, Navigator, Image, View } from "react-native";
 import TabNavigator from "react-native-tab-navigator";
 import PopularPage from "./PopularPage";
 import AsyncStorageText from '../../AsyncStorageText'
-import MyPage from '../page/MyPage'
+import MyPage from '../page/my/MyPage'
 export default class HomePage extends Component {
   constructor(props) {
     super(props);

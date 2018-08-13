@@ -9,8 +9,8 @@ import {
     Text,
     TouchableOpacity,
 } from 'react-native'
-import NavigationBar from '../common/NavigationBar'
-import HomePage from './HomePage'
+import NavigationBar from '../../common/NavigationBar'
+import HomePage from '../HomePage'
 export default class MyPage extends Component {
     constructor(props) {
         super(props);
@@ -23,7 +23,9 @@ export default class MyPage extends Component {
                     title='自定义标签'
                     style={{backgroundColor: '#6495ED'}}
                 />
-                <TouchableOpacity onPress={{}}>
+                <TouchableOpacity onPress={()=>{
+                    this.props.navigation.navigate('CustomKeyPage')
+                }}>
                 <Text style={styles.tips}>自定义标签</Text>
                 </TouchableOpacity>
             </View>)

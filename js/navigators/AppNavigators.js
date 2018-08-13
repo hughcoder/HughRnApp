@@ -1,6 +1,7 @@
 import { StackNavigator } from "react-navigation";
 import WelcomePage from "../page/WelcomePage";
 import HomePage from "../page/HomePage";
+import CustomKeyPage from '../page/my/CustomKeyPage'
 
 export default (AppNavigator = StackNavigator(
   {
@@ -9,6 +10,9 @@ export default (AppNavigator = StackNavigator(
     },
     HomePage: {
       screen: HomePage
+    },
+    CustomKeyPage:{
+      screen:CustomKeyPage
     }
   },
   {

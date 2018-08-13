@@ -9,6 +9,7 @@ import { StyleSheet, Text, Navigator, Image, View } from "react-native";
 import TabNavigator from "react-native-tab-navigator";
 import PopularPage from "./PopularPage";
 import AsyncStorageText from '../../AsyncStorageText'
+import MyPage from '../page/MyPage'
 export default class HomePage extends Component {
   constructor(props) {
     super(props);
@@ -99,7 +100,7 @@ export default class HomePage extends Component {
             )}
             onPress={() => this.setState({ selectedTab: "tb_my" })}
           >
-            <View style={{ backgroundColor: "blue", flex: 1 }} />
+            <MyPage {...this.props}></MyPage>
           </TabNavigator.Item>
         </TabNavigator>
       </View>

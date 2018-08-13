@@ -7,31 +7,25 @@ import {
     View,
     StyleSheet,
     Text,
+    TouchableOpacity,
 } from 'react-native'
 import NavigationBar from '../common/NavigationBar'
 import HomePage from './HomePage'
-import NavigatorUtil from '../util/NavigatorUtil'
-export default class WelcomePage extends Component {
+export default class MyPage extends Component {
     constructor(props) {
         super(props);
     }
 
-    componentDidMount() {
-        this.timer=setTimeout(()=> {
-           this.props.navigation.navigate('HomePage');
-        }, 2000);
-    }
-    componentWillUnmount(){
-        this.timer&&clearTimeout(this.timer);
-    }
     render() {
         return (
             <View style={styles.container}>
                 <NavigationBar
-                    title='欢迎'
+                    title='自定义标签'
                     style={{backgroundColor: '#6495ED'}}
                 />
-                <Text style={styles.tips}>欢迎</Text>
+                <TouchableOpacity onPress={{}}>
+                <Text style={styles.tips}>自定义标签</Text>
+                </TouchableOpacity>
             </View>)
     }
 }

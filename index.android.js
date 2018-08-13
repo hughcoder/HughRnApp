@@ -14,6 +14,7 @@ import {
 import ios from './index.ios'
 import setup from './js/page/setup'
 import HomePage from './js/page/HomePage'
+
 export default class imooc_gp extends Component {
   render() {
     return (
@@ -52,4 +53,4 @@ const styles = StyleSheet.create({
   },
 });
 
-AppRegistry.registerComponent('imooc_gp', () => HomePage);
+AppRegistry.registerComponent('imooc_gp', () => setup);

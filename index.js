@@ -6,4 +6,4 @@ import {name as appName} from './app.json';
 import setup from './js/page/setup'
 import HomePage from './js/page/HomePage'
 
-AppRegistry.registerComponent(appName, () => HomePage);
+AppRegistry.registerComponent(appName, () => setup);

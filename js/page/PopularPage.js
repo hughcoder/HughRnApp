@@ -18,6 +18,7 @@ import {
 import DataRepository from "../expand/dao/DataRepository";
 import TabNavigator from "react-native-tab-navigator";
 import NavigationBar from "../common/NavigationBar";
+import RepositoryCell from '../common/RepositoryCell';
 import ScrollableTabView, {
   ScrollableTabBar
 } from "react-native-scrollable-tab-view";
@@ -87,12 +88,7 @@ class PopularTab extends Component {
       });
   }
   renderRow(data){
-    return <View style={{margin:10}}>
-      <Text>{data.full_name}</Text>
-      <Text>{data.description}</Text>
-      <Text>{data.owner.avatar_url}</Text>
-      <Text>{data.stargazer_count}</Text>
-      </View>
+    return <RepositoryCell data={data}/>
   }
 
   render() {

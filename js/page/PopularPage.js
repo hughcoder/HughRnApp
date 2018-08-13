@@ -13,12 +13,13 @@ import {
   View,
   TextInput,
   ListView,
+  RefreshControl
 } from "react-native";
 
 import DataRepository from "../expand/dao/DataRepository";
 import TabNavigator from "react-native-tab-navigator";
 import NavigationBar from "../common/NavigationBar";
-import RepositoryCell from '../common/RepositoryCell';
+import RepositoryCell from "../common/RepositoryCell";
 import ScrollableTabView, {
   ScrollableTabBar
 } from "react-native-scrollable-tab-view";
@@ -28,7 +29,7 @@ export default class PopularPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      result: "",
+      result: ""
     };
     this.dataRepository = new DataRepository();
   }
@@ -50,11 +51,17 @@ export default class PopularPage extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <NavigationBar title="最热" style={{ backgroundColor: "#6495ED" }} />
-        <ScrollableTabView renderTabBar={() => <ScrollableTabBar />}>
+        <NavigationBar title="最热" style={{ backgroundColor: "#2196F3" }} statusBar={{ backgroundColor: "#2196F3" }} />
+        <ScrollableTabView
+          tabBarUnderlineStyle={{ backgroundColor: "#e7e7e7", height: 2 }}
+          tabBarActiveTextColor="white"
+          tabBarInactiveTextColor="mintcream"
+          tabBarBackgroundColor="#2196F3"
+          renderTabBar={() => <ScrollableTabBar />}
+        >
           <PopularTab tabLabel="java">JAVA</PopularTab>
           <PopularTab tabLabel="ios">IOS</PopularTab>
-          <PopularTab tabLabel="Android">Android</PopularTab>
+          <PopularTab tabLabel="Android">android</PopularTab>
           <PopularTab tabLabel="javaScript">js</PopularTab>
         </ScrollableTabView>
       </View>
@@ -67,7 +74,12 @@ class PopularTab extends Component {
     super(props);
     this.state = {
       result: "",
-      dataSource : new ListView.DataSource({rowHasChanged:(r1,r2)=>{r1!==r2}})
+      isLoading: false,
+      dataSource: new ListView.DataSource({
+        rowHasChanged: (r1, r2) => {
+          r1 !== r2;
+        }
+      })
     };
     this.dataRepository = new DataRepository();
   }
@@ -75,27 +87,42 @@ class PopularTab extends Component {
     this.loadData();
   }
   loadData() {
+    this.setState({
+      isLoading: true
+    });
     let url = URL + this.props.tabLabel + QUERY_STR;
     this.dataRepository
       .fetchNetRepository(url)
       .then(result => {
         this.setState({
-          dataSource: this.state.dataSource.cloneWithRows(result.items)
+          dataSource: this.state.dataSource.cloneWithRows(result.items),
+          isLoading: false
         });
       })
       .catch(error => {
         console.warn("err", error);
       });
   }
-  renderRow(data){
-    return <RepositoryCell data={data}/>
+  renderRow(data) {
+    return <RepositoryCell data={data} />;
   }
 
   render() {
     return (
-      <View>
-        <ListView dataSource={this.state.dataSource}
-        renderRow={(data)=>this.renderRow(data)}
+      <View style={{ flex: 1 }}>
+        <ListView
+          dataSource={this.state.dataSource}
+          renderRow={data => this.renderRow(data)}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.isLoading}
+              onRefresh={() => this.loadData()}
+              colors={["#2196F3"]}
+              tintColor={"#2196F3"}
+              title={"Loading"}
+              titleColor={"#2196F3"}
+            />
+          }
         />
       </View>
     );

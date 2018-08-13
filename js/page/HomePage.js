@@ -8,6 +8,7 @@ import React, { Component } from "react";
 import { StyleSheet, Text, Navigator, Image, View } from "react-native";
 import TabNavigator from "react-native-tab-navigator";
 import PopularPage from "./PopularPage";
+import AsyncStorageText from '../../AsyncStorageText'
 export default class HomePage extends Component {
   constructor(props) {
     super(props);
@@ -22,7 +23,7 @@ export default class HomePage extends Component {
         <TabNavigator>
           <TabNavigator.Item
             selected={this.state.selectedTab === "tb_popular"}
-            selectedTitleStyle={{ color: "red" }}
+            selectedTitleStyle={{ color: "#2196F3" }}
             title="最热"
             renderIcon={() => (
               <Image
@@ -32,7 +33,7 @@ export default class HomePage extends Component {
             )}
             renderSelectedIcon={() => (
               <Image
-                style={[styles.image, { tintColor: "red" }]}
+                style={[styles.image, { tintColor: "#2196F3" }]}
                 source={require("../../res/images/ic_polular.png")}
               />
             )}
@@ -58,7 +59,7 @@ export default class HomePage extends Component {
             )}
             onPress={() => this.setState({ selectedTab: "tb_trending" })}
           >
-            <View style={{ backgroundColor: "yellow", flex: 1 }} />
+            <AsyncStorageText></AsyncStorageText>
           </TabNavigator.Item>
           <TabNavigator.Item
             selected={this.state.selectedTab === "tb_favorite"}

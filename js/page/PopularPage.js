@@ -51,7 +51,6 @@ export default class PopularPage extends Component {
   }
 
   render() {
-    console.warn("--->", this.state.languages);
     let content =
       this.state.languages.length > 0 ? (
         <ScrollableTabView

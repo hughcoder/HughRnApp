@@ -28,6 +28,11 @@ export default class MyPage extends Component {
                 }}>
                 <Text style={styles.tips}>自定义标签</Text>
                 </TouchableOpacity>
+                <TouchableOpacity onPress={()=>{
+                    this.props.navigation.navigate('SortKeyPage')
+                }}>
+                <Text style={styles.tips}>标签排序页</Text>
+                </TouchableOpacity>
             </View>)
     }
 }

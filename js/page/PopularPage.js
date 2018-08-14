@@ -13,7 +13,8 @@ import {
   View,
   TextInput,
   ListView,
-  RefreshControl
+  RefreshControl,
+  DeviceEventEmitter
 } from "react-native";
 
 import DataRepository from "../expand/dao/DataRepository";
@@ -39,15 +40,17 @@ export default class PopularPage extends Component {
   componentDidMount() {
     this.loadData();
   }
-  
-  loadData(){
-    this.LanguageDao.fetch().then(result=>{
-      this.setState({
-        languages:result
+
+  loadData() {
+    this.LanguageDao.fetch()
+      .then(result => {
+        this.setState({
+          languages: result
+        });
       })
-    }).catch(error=>{
-      console.warn('err',error)
-    })
+      .catch(error => {
+        console.warn("err", error);
+      });
   }
 
   render() {
@@ -67,10 +70,12 @@ export default class PopularPage extends Component {
             />
           )}
         >
-          {this.state.languages.map((reuslt, i, arr)=> {
+          {this.state.languages.map((reuslt, i, arr) => {
             let language = arr[i];
-            return language.checked ? <PopularTab key={i} tabLabel={language.name} {...this.props}/> : null;
-        })}
+            return language.checked ? (
+              <PopularTab key={i} tabLabel={language.name} {...this.props} />
+            ) : null;
+          })}
         </ScrollableTabView>
       ) : null;
     return (
@@ -109,12 +114,30 @@ class PopularTab extends Component {
     });
     let url = URL + this.props.tabLabel + QUERY_STR;
     this.dataRepository
-      .fetchNetRepository(url)
+      .fetchRepository(url)
       .then(result => {
+        let item = result && result.items ? result.items : result ? result : []; //!!!!!!
         this.setState({
           dataSource: this.state.dataSource.cloneWithRows(result.items),
           isLoading: false
         });
+        if (
+          result &&
+          result.updata_data &&
+          !this.dataRepository.checkData(result.update_date)
+        ) {
+          DeviceEventEmitter.emit("showToast", "数据过时");
+          return this.dataRepository.fetchNetRepository(url);
+        } else {
+          DeviceEventEmitter.emit("showToast", "显示缓存数据");
+        }
+      })
+      .then(items => {
+        if (!items || items.length === 0)return;
+        this.setState({
+            dataSource: this.state.dataSource.cloneWithRows(items),
+        });
+        DeviceEventEmitter.emit('showToast', '显示网络数据');
       })
       .catch(error => {
         console.warn("err", error);

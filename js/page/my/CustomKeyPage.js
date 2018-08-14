@@ -9,7 +9,8 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
-  Image
+  Image,
+  Alert
 } from "react-native";
 import NavigationBar from "../../common/NavigationBar";
 import HomePage from "../HomePage";
@@ -23,7 +24,7 @@ export default class CustomKeyPage extends Component {
   constructor(props) {
     super(props);
     this.languageDao = new LanguageDao(FLAG_LANGUAGE.flag_key);
-    this.changeValues = []
+    this.changeValues = [];
     this.state = {
       dataArray: []
     };
@@ -52,7 +53,25 @@ export default class CustomKeyPage extends Component {
   }
   renderView() {}
   onBack() {
-    this.props.navigation.pop();
+    if (this.changeValues.length === 0) {
+      this.props.navigation.pop();
+      return;
+    } else {
+      Alert.alert(
+        "提示",
+        "要保存修改吗？",
+        [
+          { text: "不保存", onPress: () => this.props.navigation.pop() },
+          {
+            text: "保存",
+            onPress: () => {
+              this.onSave()
+            }
+          }
+        ],
+        { cancelable: false }
+      );
+    }
   }
   renderView() {
     if (!this.state.dataArray || this.state.dataArray.length === 0) {

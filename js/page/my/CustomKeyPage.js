@@ -25,6 +25,7 @@ export default class CustomKeyPage extends Component {
     super(props);
     this.languageDao = new LanguageDao(FLAG_LANGUAGE.flag_key);
     this.changeValues = [];
+    this.isRemoveKey = this.props.navigation.state.params.isRemoveKey;
     this.state = {
       dataArray: []
     };
@@ -48,6 +49,11 @@ export default class CustomKeyPage extends Component {
       this.props.navigation.pop();
       return;
     }
+    if (this.isRemoveKey) {
+      for (let i = 0, l = this.changeValues.length; i < l; i++) {
+        ArrayUtils.remove(this.state.dataArray, this.changeValues[i]);
+      }
+    }
     this.languageDao.save(this.state.dataArray);
     this.props.navigation.pop();
   }
@@ -65,7 +71,7 @@ export default class CustomKeyPage extends Component {
           {
             text: "保存",
             onPress: () => {
-              this.onSave()
+              this.onSave();
             }
           }
         ],
@@ -105,17 +111,18 @@ export default class CustomKeyPage extends Component {
     }
   }
   onClick(data) {
-    data.checked = !data.checked;
+    if (!this.isRemoveKey) data.checked = !data.checked;
     ArrayUtils.updateArray(this.changeValues, data);
   }
   renderCheckBox(data) {
     let leftText = data.name;
+    let isChecked = this.isRemoveKey ? false : data.checked;
     return (
       <CheckBox
         onClick={() => this.onClick(data)}
         style={{ flex: 1, padding: 10 }}
         leftText={leftText}
-        isChecked={data.checked}
+        isChecked={isChecked}
         checkedImage={
           <Image
             source={require("./img/ic_check_box.png")}
@@ -133,17 +140,19 @@ export default class CustomKeyPage extends Component {
   }
 
   render() {
+    let right = this.isRemoveKey ? "移除" : "保存";
     let rightButton = (
       <TouchableOpacity onPress={() => this.onSave()}>
         <View style={{ margin: 10 }}>
-          <Text style={styles.title}>保存</Text>
+          <Text style={styles.title}>{right}</Text>
         </View>
       </TouchableOpacity>
     );
+    let title = this.isRemoveKey ? "标签移除" : "自定义标签";
     return (
       <View style={styles.container}>
         <NavigationBar
-          title="欢迎"
+          title={title}
           style={{ backgroundColor: "#6495ED" }}
           leftButton={ViewUtils.getLeftButton(() => {
             this.onBack();

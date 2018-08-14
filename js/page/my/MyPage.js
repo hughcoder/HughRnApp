@@ -24,7 +24,9 @@ export default class MyPage extends Component {
                     style={{backgroundColor: '#6495ED'}}
                 />
                 <TouchableOpacity onPress={()=>{
-                    this.props.navigation.navigate('CustomKeyPage')
+                    this.props.navigation.navigate('CustomKeyPage',{
+                        isRemoveKey:false,
+                    })
                 }}>
                 <Text style={styles.tips}>自定义标签</Text>
                 </TouchableOpacity>
@@ -32,6 +34,13 @@ export default class MyPage extends Component {
                     this.props.navigation.navigate('SortKeyPage')
                 }}>
                 <Text style={styles.tips}>标签排序页</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={()=>{
+                    this.props.navigation.navigate('CustomKeyPage',{
+                        isRemoveKey:true,
+                    })
+                }}>
+                <Text style={styles.tips}>标签移除接口</Text>
                 </TouchableOpacity>
             </View>)
     }

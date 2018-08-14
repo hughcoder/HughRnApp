@@ -43,7 +43,6 @@ export default class CustomKeyPage extends Component {
       });
   }
   onSave() {
-    console.warn('--->')
     if (this.changeValues.length === 0) {
       this.props.navigation.pop();
       return;

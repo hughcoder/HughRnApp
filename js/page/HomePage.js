@@ -11,6 +11,7 @@ import PopularPage from "./PopularPage";
 import AsyncStorageText from '../../AsyncStorageText'
 import MyPage from '../page/my/MyPage'
 import Toast,{DURATION} from 'react-native-easy-toast'
+import WebViewTest from '../../WebViewTest'
 export default class HomePage extends Component {
   constructor(props) {
     super(props);
@@ -90,7 +91,7 @@ export default class HomePage extends Component {
             )}
             onPress={() => this.setState({ selectedTab: "tb_favorite" })}
           >
-            <View style={{ backgroundColor: "green", flex: 1 }} />
+         <WebViewTest/>
           </TabNavigator.Item>
           <TabNavigator.Item
             selected={this.state.selectedTab === "tb_my"}

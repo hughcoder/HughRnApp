@@ -75,12 +75,13 @@ export default class DataRepository {
    */
   checkData(longTime){
     // return false; 测试用的
-    let cDate= new Date();
-    let tDate= new Date();
-    tDate.setTime(longTime);
-    if(cDate.getMonth()!==tDate.getMonth())  return false;
-    if(cDate.getDay()!==tDate.getDate())  return false;
-    if(cDate.getHours()-tDate.getHours()>4) return false;
-    return true
+    let currentDate = new Date();
+    let targetDate = new Date();
+    targetDate.setTime(longTime);
+    if (currentDate.getMonth() !== targetDate.getMonth())return false;
+    if (currentDate.getDate() !== targetDate.getDate())return false;
+    if (currentDate.getHours() - targetDate.getHours() > 4)return false;
+    // if (currentDate.getMinutes() - targetDate.getMinutes() > 1)return false;
+    return true;
   }
 }

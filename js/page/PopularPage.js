@@ -124,7 +124,7 @@ class PopularTab extends Component {
         if (
           result &&
           result.updata_data &&
-          !this.dataRepository.checkData(result.update_date)
+          !this.dataRepository.checkData(result.updata_data)
         ) {
           DeviceEventEmitter.emit("showToast", "数据过时");
           return this.dataRepository.fetchNetRepository(url);

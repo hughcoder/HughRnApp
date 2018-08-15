@@ -17,7 +17,7 @@ import {
   DeviceEventEmitter
 } from "react-native";
 
-import DataRepository from "../expand/dao/DataRepository";
+import DataRepository,{FLAG_STORAGE} from "../expand/dao/DataRepository";
 import TabNavigator from "react-native-tab-navigator";
 import NavigationBar from "../common/NavigationBar";
 import RepositoryCell from "../common/RepositoryCell";
@@ -103,7 +103,7 @@ class PopularTab extends Component {
         }
       })
     };
-    this.dataRepository = new DataRepository();
+    this.dataRepository = new DataRepository(FLAG_STORAGE.flag_popular);
   }
   componentDidMount() {
     this.loadData();

@@ -143,8 +143,15 @@ class PopularTab extends Component {
         console.warn("err", error);
       });
   }
+  onSelect(item){
+  this.props.navigation.navigate('RepositoryDetail',{
+    item:item
+  })
+  }
   renderRow(data) {
-    return <RepositoryCell data={data} />;
+    return <RepositoryCell data={data} ket={data.id}
+    onSelect={()=>this.onSelect(data)}
+    />;
   }
 
   render() {

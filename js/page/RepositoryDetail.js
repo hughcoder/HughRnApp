@@ -13,13 +13,19 @@ import {
   DeviceEventEmitter
 } from "react-native";
 import NavigationBar from "../common/NavigationBar";
-import ViewUtils from '../util/ViewUtils'
+import ViewUtils from "../util/ViewUtils";
 const URL = "http://www.github.com/";
+const TRENDING_URL = "https://github.com/";
 export default class RepositoryDetail extends Component {
   constructor(props) {
     super(props);
-    this.url=this.props.navigation.state.params.item.html_url
-    let title =this.props.navigation.state.params.item.full_name
+    let item = this.props.navigation.state.params.item;
+    this.url = this.props.navigation.state.params.item.html_url
+      ? item.html_url
+      : TRENDING_URL+item.fullName;
+    let title = this.props.navigation.state.params.item.full_name
+      ? item.full_name
+      : item.fullName;
     this.state = {
       url: this.url,
       title: title,
@@ -29,8 +35,7 @@ export default class RepositoryDetail extends Component {
   onBack() {
     if (this.state.canGoBack) {
       this.webview.goBack();
-      
-    }else{
+    } else {
       this.props.navigation.pop();
     }
   }
@@ -53,7 +58,9 @@ export default class RepositoryDetail extends Component {
         <NavigationBar
           title={this.state.title}
           style={{ backgroundColor: "#6495ED" }}
-          leftButton={ViewUtils.getLeftButton(()=>{this.onBack()})}
+          leftButton={ViewUtils.getLeftButton(() => {
+            this.onBack();
+          })}
         />
         {/* <View style={styles.row}>
           <TouchableOpacity
@@ -77,7 +84,7 @@ export default class RepositoryDetail extends Component {
           </TouchableOpacity>
         </View> */}
         <WebView
-          ref={webview => this.webview = webview}
+          ref={webview => (this.webview = webview)}
           source={{ uri: this.state.url }}
           onNavigationStateChange={e => {
             this.onNavigationStateChange(e);

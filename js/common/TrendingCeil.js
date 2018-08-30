@@ -9,16 +9,25 @@ import {
   ListView,
   TouchableOpacity
 } from "react-native";
-import HTMLView from 'react-native-htmlview'
+import HTMLView from "react-native-htmlview";
 
 export default class TrendingCeil extends Component {
   render() {
+    let data = this.props.data;
+    let description = "<p>" + data.description + "</p>";
     return (
       <TouchableOpacity onPress={this.props.onSelect} style={styles.container}>
         <View style={styles.cell_container}>
-          <Text style={styles.title}>{this.props.data.fullName}</Text>
-          <HTMLView value={this.props.data.description} onLinkPress={()=>{}} />
-          <Text style={styles.description}>{this.props.data.meta}</Text>
+          <Text style={styles.title}>{data.fullName}</Text>
+          <HTMLView
+            value={description}
+            onLinkPress={() => {}}
+            stylesheet={{
+              p:styles.description,
+              a:styles.description,
+            }}
+          />
+          <Text style={styles.description}>{data.meta}</Text>
           <View
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
@@ -29,7 +38,7 @@ export default class TrendingCeil extends Component {
               }}
             >
               <Text style={styles.author}>Build by:</Text>
-              {this.props.data.contributors.map((result, i, arr) => {
+              {data.contributors.map((result, i, arr) => {
                 return (
                   <Image
                     style={{ height: 22, width: 22 }}

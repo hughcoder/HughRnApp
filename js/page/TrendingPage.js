@@ -1,7 +1,5 @@
 /**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
+ * Popover 还没弄之后再看看吧
  */
 
 import React, { Component } from "react";
@@ -14,7 +12,8 @@ import {
   TextInput,
   ListView,
   RefreshControl,
-  DeviceEventEmitter
+  DeviceEventEmitter,
+  TouchableOpacity
 } from "react-native";
 
 import DataRepository, { FLAG_STORAGE } from "../expand/dao/DataRepository";
@@ -26,13 +25,23 @@ import ScrollableTabView, {
   ScrollableTabBar
 } from "react-native-scrollable-tab-view";
 import LanguageDao, { FLAG_LANGUAGE } from "../expand/dao/LanguageDao";
+import TimeSpan from "../model/TimeSpan";
+import Popover from "../common/Popover";
 const URL = "https://github.com/trending/";
+var timeSpanTextArray = [
+  new TimeSpan("今 天", "since=daily"),
+  new TimeSpan("本 周", "since=weekly"),
+  new TimeSpan("本 月", "since=monthly")
+];
+
 export default class TrendingPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
       result: "",
-      languages: []
+      languages: [],
+      isVisible: false,
+      buttonRect: {}
     };
     this.dataRepository = new DataRepository(FLAG_STORAGE.flag_trending);
     this.LanguageDao = new LanguageDao(FLAG_LANGUAGE.flag_language);
@@ -51,6 +60,39 @@ export default class TrendingPage extends Component {
         }
       })
       .catch(error => {});
+  }
+
+  showPopover() {
+    this.refs.button.measure((ox, oy, width, height, px, py) => {
+      this.setState({
+        isVisible: true,
+        buttonRect: { x: px, y: py, width: width, height: height }
+      });
+    });
+  }
+
+  renderTitleView() {
+    return (
+      <View>
+        <TouchableOpacity ref="button" onPress={() => this.showPopover()}>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Text
+              style={{
+                fontSize: 18,
+                color: "white",
+                fontWeight: "400"
+              }}
+            >
+              趋势
+            </Text>
+            <Image
+              style={{ width: 12, height: 12, marginLeft: 5 }}
+              source={require("../../res/images/ic_spinner_triangle.png")}
+            />
+          </View>
+        </TouchableOpacity>
+      </View>
+    );
   }
 
   render() {
@@ -78,14 +120,25 @@ export default class TrendingPage extends Component {
           })}
         </ScrollableTabView>
       ) : null;
+    let timeSpanView = (
+      <Popover
+        isVisible={this.state.isVisible}
+        fromRect={this.state.buttonRect}
+        onClose={this.closePopover}
+      >
+        <Text>I'm the content of this popover!</Text>
+      </Popover>
+    );
     return (
       <View style={styles.container}>
         <NavigationBar
           title="趋势"
           style={{ backgroundColor: "#2196F3" }}
           statusBar={{ backgroundColor: "#2196F3" }}
+          titleView={this.renderTitleView()}
         />
         {content}
+        {timeSpanView}
       </View>
     );
   }
@@ -108,6 +161,7 @@ class TrendingTab extends Component {
   componentDidMount() {
     this.loadData();
   }
+
   genFetchUrl(timeSpan, category) {
     return URL + category + timeSpan.searchText;
   }
@@ -155,10 +209,13 @@ class TrendingTab extends Component {
   }
   renderRow(data) {
     console.log("----->", data);
-    return <TrendingCeil data={data} 
-     key={data.id}
-     onSelect={()=>this.onSelect(data)}
-    />;
+    return (
+      <TrendingCeil
+        data={data}
+        key={data.id}
+        onSelect={() => this.onSelect(data)}
+      />
+    );
   }
 
   render() {

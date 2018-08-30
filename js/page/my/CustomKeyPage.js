@@ -23,14 +23,15 @@ import ArrayUtils from "../../util/ArrayUtils";
 export default class CustomKeyPage extends Component {
   constructor(props) {
     super(props);
-    this.languageDao = new LanguageDao(FLAG_LANGUAGE.flag_key);
     this.changeValues = [];
     this.isRemoveKey = this.props.navigation.state.params.isRemoveKey;
     this.state = {
-      dataArray: []
+      dataArray: [],
+      flag : this.props.navigation.state.params.flag
     };
   }
   componentDidMount() {
+    this.languageDao = new LanguageDao(this.state.flag);
     this.loadData();
   }
 

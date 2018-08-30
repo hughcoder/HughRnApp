@@ -34,7 +34,7 @@ export default class PopularPage extends Component {
       result: "",
       languages: []
     };
-    this.dataRepository = new DataRepository();
+    this.dataRepository = new DataRepository(FLAG_STORAGE.flag_popular);
     this.LanguageDao = new LanguageDao(FLAG_LANGUAGE.flag_key);
   }
   componentDidMount() {

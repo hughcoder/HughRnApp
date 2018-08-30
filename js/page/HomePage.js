@@ -73,7 +73,7 @@ export default class HomePage extends Component {
             )}
             onPress={() => this.setState({ selectedTab: "tb_trending" })}
           >
-            <TrendingPage/>
+            <TrendingPage  {...this.props} />
           </TabNavigator.Item>
           <TabNavigator.Item
             selected={this.state.selectedTab === "tb_favorite"}

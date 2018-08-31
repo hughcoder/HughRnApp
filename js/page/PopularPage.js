@@ -21,7 +21,7 @@ import DataRepository, { FLAG_STORAGE } from "../expand/dao/DataRepository";
 import TabNavigator from "react-native-tab-navigator";
 import NavigationBar from "../common/NavigationBar";
 import RepositoryCell from "../common/RepositoryCell";
-import FavoriteDao from '../expand/dao/FavoriteDao'
+import FavoriteDao from "../expand/dao/FavoriteDao";
 import ScrollableTabView, {
   ScrollableTabBar
 } from "react-native-scrollable-tab-view";
@@ -29,7 +29,7 @@ import ProjectModel from "../model/ProjectModel";
 import LanguageDao, { FLAG_LANGUAGE } from "../expand/dao/LanguageDao";
 const URL = "https://api.github.com/search/repositories?q=";
 const QUERY_STR = "&sort=stars";
-var favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular)
+var favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular);
 export default class PopularPage extends Component {
   constructor(props) {
     super(props);
@@ -98,7 +98,7 @@ class PopularTab extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      favoriteKeys:[],
+      favoriteKeys: [],
       result: "",
       isLoading: false,
       dataSource: new ListView.DataSource({
@@ -127,10 +127,25 @@ class PopularTab extends Component {
     });
   }
 
-  getDataSource(data){
+  getDataSource(data) {
     return this.state.dataSource.cloneWithRows(data);
   }
 
+  getFavoriteKeys() {
+    favoriteDao
+      .getFavoriteKeys()
+      .then(keys => {
+        if (keys) {
+          this.updateState({
+            favoriteKeys: keys
+          });
+        }
+        this.flushFavoriteState();
+      })
+      .catch(e => {
+        this.flushFavoriteState();
+      });
+  }
 
   updateState(dic) {
     if (!this) return;
@@ -142,16 +157,16 @@ class PopularTab extends Component {
       isLoading: true
     });
     let url = URL + this.props.tabLabel + QUERY_STR;
-    console.log('---->',url)
+    console.log("---->", url);
     this.dataRepository
       .fetchRepository(url)
       .then(result => {
         this.items =
           result && result.items ? result.items : result ? result : []; //!!!!!!
-        this.flushFavoriteState();
+          this.getFavoriteKeys();
         if (
           result &&
-          result.updata_data 
+          result.updata_data
           // !this.dataRepository.checkData(result.updata_data) 类比到云存储 可以判断服务有没有过期，然后进行自动缓存
         ) {
           // DeviceEventEmitter.emit("showToast", "数据过时");
@@ -178,9 +193,7 @@ class PopularTab extends Component {
   /**
    * 收藏单击回调函数
    */
-  onFavorite(item,isFavorite){
-   
-  }
+  onFavorite(item, isFavorite) {}
 
   renderRow(ProjectModel) {
     return (
@@ -188,7 +201,7 @@ class PopularTab extends Component {
         ProjectModel={ProjectModel}
         ket={ProjectModel.item.id}
         onSelect={() => this.onSelect(ProjectModel)}
-        onFavorite={(item,isFavorite)=>this.onFavorite(item,isFavorite)}
+        onFavorite={(item, isFavorite) => this.onFavorite(item, isFavorite)}
       />
     );
   }

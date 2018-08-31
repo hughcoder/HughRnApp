@@ -27,7 +27,7 @@ export default class CustomKeyPage extends Component {
     this.isRemoveKey = this.props.navigation.state.params.isRemoveKey;
     this.state = {
       dataArray: [],
-      flag : this.props.navigation.state.params.flag
+      flag: this.props.navigation.state.params.flag
     };
   }
   componentDidMount() {
@@ -150,6 +150,10 @@ export default class CustomKeyPage extends Component {
       </TouchableOpacity>
     );
     let title = this.isRemoveKey ? "标签移除" : "自定义标签";
+    title =
+      this.props.navigation.state.params.flag === FLAG_LANGUAGE.flag_language
+        ? "自定义语言"
+        : title;
     return (
       <View style={styles.container}>
         <NavigationBar

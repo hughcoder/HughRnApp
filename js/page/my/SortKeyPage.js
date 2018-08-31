@@ -25,12 +25,13 @@ export default class SortKeyPage extends Component {
     this.originalCheckedArray = []; //已经订阅的标签筛选出来(筛选后的数组) a,c,e
     this.sortResultArray = []; //排序之后新生成的所有标签的数组
     this.state = {
-      checkedArray: []  //对筛选后的数据进行排序 c,e,a
+      checkedArray: [], //对筛选后的数据进行排序 c,e,a
+      flag: this.props.navigation.state.params.flag
     };
     //记录下上一个标签排序的顺序
   }
   componentDidMount() {
-    this.languageDao = new LanguageDao(FLAG_LANGUAGE.flag_key);
+    this.languageDao = new LanguageDao(this.state.flag);
     this.loadData();
   }
   loadData() {
@@ -97,11 +98,13 @@ export default class SortKeyPage extends Component {
     for (let i = 0, l = this.originalCheckedArray.length; i < l; i++) {
       let item = this.originalCheckedArray[i];
       let index = this.dataArray.indexOf(item);
-      this.sortResultArray.splice(index, 1, this.state.checkedArray[i]);//获取排序前数字的索引位置，用新的去替换这个位置
+      this.sortResultArray.splice(index, 1, this.state.checkedArray[i]); //获取排序前数字的索引位置，用新的去替换这个位置
     }
   }
 
   render() {
+    let title =
+      this.state.flag === FLAG_LANGUAGE.flag_language ? "语言排序" : "标签排序";
     let rightButton = (
       <TouchableOpacity onPress={() => this.onSave()}>
         <View style={{ margin: 10 }}>
@@ -112,7 +115,7 @@ export default class SortKeyPage extends Component {
     return (
       <View style={styles.container}>
         <NavigationBar
-          title="自定义标签"
+          title={title}
           style={{ backgroundColor: "#6495ED" }}
           leftButton={ViewUtils.getLeftButton(() => {
             this.onBack();
@@ -127,7 +130,8 @@ export default class SortKeyPage extends Component {
             this.state.checkedArray.splice(
               e.to,
               0,
-              this.state.checkedArray.splice(e.from, 1)[0]);
+              this.state.checkedArray.splice(e.from, 1)[0]
+            );
             this.forceUpdate();
           }}
           renderRow={row => <SortCell data={row} />}

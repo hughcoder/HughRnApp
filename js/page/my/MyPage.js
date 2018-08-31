@@ -41,10 +41,21 @@ export default class MyPage extends Component {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
-            this.props.navigation.navigate("SortKeyPage");
+            this.props.navigation.navigate("SortKeyPage", {
+              flag: FLAG_LANGUAGE.flag_key
+            });
           }}
         >
           <Text style={styles.tips}>标签排序页</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            this.props.navigation.navigate("SortKeyPage", {
+              flag: FLAG_LANGUAGE.flag_language
+            });
+          }}
+        >
+          <Text style={styles.tips}>语言排序页</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {

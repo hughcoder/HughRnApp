@@ -28,20 +28,20 @@ export default class FavoriteDao {
    * @param {*} key
    * @param {*} isAdd true 添加，false删除
    */
-  updateFavoriteKeys(key, isAdd) {
-    AsyncStorage.getItem(this.favoriteKey, (error, result) => {
+  updateFavoriteKeys(key,isAdd){
+    AsyncStorage.getItem(this.favoriteKey,(error,result)=>{
       if (!error) {
-        let favoriteKey = [];
+        var favoriteKeys=[];
         if (result) {
-          favoriteKeys = JSON.parse(result);
+          favoriteKeys=JSON.parse(result);
         }
-        let index = favoriteKeys.indexOf(key);
-        if (isAdd) {
-          if (index === -1) favoriteKeys.push(key);
-        } else {
-          if (index !== -1) favoriteKeys.splice(index, 1);
+        var index=favoriteKeys.indexOf(key);
+        if(isAdd){
+          if (index===-1)favoriteKeys.push(key);
+        }else {
+          if (index!==-1)favoriteKeys.splice(index, 1);
         }
-        AsyncStorage.setItem(this.favoriteKey, JSON.stringify(favoriteKey));
+        AsyncStorage.setItem(this.favoriteKey,JSON.stringify(favoriteKeys));
       }
     });
   }
@@ -51,7 +51,7 @@ export default class FavoriteDao {
    */
 
   removeFavoriteItem(key) {
-    AsyncStorage.setItem(key, error => {
+    AsyncStorage.removeItem(key, error => {
       if (!error) {
         this.updateFavoriteKeys(key, false);
       }

@@ -19,11 +19,11 @@ const TRENDING_URL = "https://github.com/";
 export default class RepositoryDetail extends Component {
   constructor(props) {
     super(props);
-    let item = this.props.navigation.state.params.item;
-    this.url = this.props.navigation.state.params.item.html_url
+    let item = this.props.navigation.state.params.projectModel.item;
+    this.url = this.props.navigation.state.params.projectModel.item.html_url
       ? item.html_url
       : TRENDING_URL+item.fullName;
-    let title = this.props.navigation.state.params.item.full_name
+    let title = this.props.navigation.state.params.projectModel.item.full_name
       ? item.full_name
       : item.fullName;
     this.state = {

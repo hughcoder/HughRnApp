@@ -27,6 +27,7 @@ import ScrollableTabView, {
 } from "react-native-scrollable-tab-view";
 import ProjectModel from "../model/ProjectModel";
 import LanguageDao, { FLAG_LANGUAGE } from "../expand/dao/LanguageDao";
+import Utils from "../util/Utils";
 const URL = "https://api.github.com/search/repositories?q=";
 const QUERY_STR = "&sort=stars";
 var favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular);
@@ -119,7 +120,12 @@ class PopularTab extends Component {
     let projectModels = [];
     let items = this.items;
     for (let i = 0, len = items.length; i < len; i++) {
-      projectModels.push(new ProjectModel(items[i], false));
+      projectModels.push(
+        new ProjectModel(
+          items[i],
+          Utils.checkFavorite(items[i], this.state.favoriteKeys)
+        )
+      );
     }
     this.updateState({
       isLoading: false,
@@ -137,7 +143,7 @@ class PopularTab extends Component {
       .then(keys => {
         if (keys) {
           this.updateState({
-            favoriteKeys: keys
+            FavoriteKeys: keys
           });
         }
         this.flushFavoriteState();
@@ -163,7 +169,7 @@ class PopularTab extends Component {
       .then(result => {
         this.items =
           result && result.items ? result.items : result ? result : []; //!!!!!!
-          this.getFavoriteKeys();
+        this.getFavoriteKeys();
         if (
           result &&
           result.updata_data
@@ -185,15 +191,21 @@ class PopularTab extends Component {
         console.warn("err", error);
       });
   }
-  onSelect(item) {
+  onSelect(projectModel) {
     this.props.navigation.navigate("RepositoryDetail", {
-      item: item
+      projectModel: projectModel
     });
   }
   /**
    * 收藏单击回调函数
    */
-  onFavorite(item, isFavorite) {}
+  onFavorite(item, isFavorite) {
+    if (isFavorite) {
+      favoriteDao.saveFavoriteItem(item.id.toString(), JSON.stringify(item));
+    } else {
+      favoriteDao.removeFavoriteItem(item.id.toString());
+    }
+  }
 
   renderRow(ProjectModel) {
     return (

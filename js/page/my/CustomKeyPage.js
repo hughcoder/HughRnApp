@@ -24,6 +24,7 @@ export default class CustomKeyPage extends Component {
   constructor(props) {
     super(props);
     this.changeValues = [];
+    console.log('---->this.props.navigation.state',this.props.navigation.state)
     this.isRemoveKey = this.props.navigation.state.params.isRemoveKey;
     this.state = {
       dataArray: [],

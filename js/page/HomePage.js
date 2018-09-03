@@ -15,6 +15,7 @@ import {
 } from "react-native";
 import TabNavigator from "react-native-tab-navigator";
 import PopularPage from "./PopularPage";
+import FavoritePage from './FavoritePage'
 import AsyncStorageText from "../../AsyncStorageText";
 import MyPage from "../page/my/MyPage";
 import Toast, { DURATION } from "react-native-easy-toast";
@@ -75,7 +76,7 @@ export default class HomePage extends Component {
             require("../../res/images/ic_trending.png")
           )}
           {this._rendetTab(
-            WebViewTest,
+            FavoritePage,
             "tb_favorite",
             "收藏",
             require("../../res/images/ic_favorite.png")

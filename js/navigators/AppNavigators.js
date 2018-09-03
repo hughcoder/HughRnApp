@@ -3,8 +3,9 @@ import WelcomePage from "../page/WelcomePage";
 import HomePage from "../page/HomePage";
 import CustomKeyPage from "../page/my/CustomKeyPage";
 import SortKeyPage from "../page/my/SortKeyPage";
-import RepositoryDetail from '../page/RepositoryDetail';
-import PopularPage from '../page/PopularPage'
+import RepositoryDetail from "../page/RepositoryDetail";
+import PopularPage from "../page/PopularPage";
+import AboutPage from "../page/about/About";
 
 export default (AppNavigator = StackNavigator(
   {
@@ -20,9 +21,12 @@ export default (AppNavigator = StackNavigator(
     SortKeyPage: {
       screen: SortKeyPage
     },
-    RepositoryDetail:{
-      screen:RepositoryDetail
+    RepositoryDetail: {
+      screen: RepositoryDetail
     },
+    AboutPage: {
+      screen: AboutPage
+    }
   },
   {
     navigationOptions: {

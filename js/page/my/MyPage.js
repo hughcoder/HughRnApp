@@ -29,6 +29,7 @@ export default class MyPage extends Component {
 
   onClick(tab) {
     let TargetComponent,
+      isRemoveKey,
       flag = { ...this.props, menuType: tab };
     switch (tab) {
       case MORE_MENU.Custom_Language:
@@ -42,6 +43,7 @@ export default class MyPage extends Component {
       case MORE_MENU.Remove_Key:
         TargetComponent = "CustomKeyPage";
         flag = FLAG_LANGUAGE.flag_key;
+
         break;
       case MORE_MENU.Sort_Language:
         TargetComponent = "SortKeyPage";
@@ -50,6 +52,7 @@ export default class MyPage extends Component {
       case MORE_MENU.Sort_Key:
         TargetComponent = "SortKeyPage";
         flag = FLAG_LANGUAGE.flag_key;
+        isRemoveKey = true;
         break;
       case MORE_MENU.Custom_Theme:
         break;
@@ -62,7 +65,8 @@ export default class MyPage extends Component {
     }
     if (TargetComponent != null) {
       this.props.navigation.navigate(TargetComponent, {
-        flag: flag
+        flag: flag,
+        isRemoveKey: isRemoveKey
       });
     }
   }

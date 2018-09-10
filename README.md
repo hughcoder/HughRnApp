@@ -1,2 +1,2 @@
 # HughRnApp
-![](file:////Users/chenyouwei/rnProjects/hughApp/t1.png) 
+![]('./t1.png') 

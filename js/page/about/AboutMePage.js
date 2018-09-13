@@ -10,7 +10,8 @@ import {
   Dimensions,
   ListView,
   Platform,
-  Linking
+  Linking,
+  Clipboard
 } from "react-native";
 import ViewUtils from "../../util/ViewUtils";
 import { MORE_MENU } from "../../common/MoreMenu";
@@ -18,6 +19,7 @@ import GlobalStyles from "../../../res/styles/GlobalStyles";
 import AboutCommon, { FLAG_ABOUT } from "./AboutCommon";
 import config from "../../../res/data/config.json";
 import WebViewPage from "../WebViewPage";
+import Toast, { DURATION } from "react-native-easy-toast";
 const FLAG = {
   REPOSITORY: "开源项目",
   BLOG: {
@@ -109,6 +111,16 @@ export default class AboutMePage extends Component {
     let TargetComponent,
       params = { menuType: tab };
     switch (tab) {
+      case FLAG.BLOG.items.CSDN:
+      case FLAG.BLOG.items.GITHUB:
+      case FLAG.BLOG.items.JIANSHU:
+      case FLAG.BLOG.items.PERSONAL_BLOG:
+        TargetComponent = "WebViewPage";
+        let newUrl = tab.account;
+        params.url = newUrl;
+        params.title = "个人博客";
+        break;
+        break;
       case FLAG.REPOSITORY:
         this.updateState({ showRepository: !this.state.showRepository });
         break;
@@ -120,6 +132,21 @@ export default class AboutMePage extends Component {
         break;
       case FLAG.CONTACT:
         this.updateState({ showContact: !this.state.showContact });
+        break;
+      case FLAG.CONTACT.items.QQ:
+        Clipboard.setString(tab.account);
+        this.toast.show("QQ:" + tab.account + "已复制到剪贴板");
+      case FLAG.CONTACT.items.Email:
+        let url = "mailto://849978368@qq.com";
+        Linking.canOpenURL(url)
+          .then(supported => {
+            if (!supported) {
+              console.log("Can't handle url: " + url);
+            } else {
+              return Linking.openURL(url);
+            }
+          })
+          .catch(err => console.error("An error occurred", err));
         break;
     }
     if (TargetComponent != null) {
@@ -200,14 +227,12 @@ export default class AboutMePage extends Component {
         {this.state.showContact ? this.renderItems(FLAG.CONTACT.items) : null}
       </View>
     );
-    return this.aboutCommon.render(content, {
-      name: "HughRnApp",
-      description:
-        "这是一个滴滴答答滴滴答答滴滴答答的描述这是一个滴滴答答滴滴答答滴滴答答的描述",
-      avatar: "https://avatar.csdn.net/6/7/C/1_qq_38366777.jpg?1536042584",
-      backgroundImg:
-        "https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=1333646673,365823664&fm=26&gp=0.jpg"
-    });
+    return (
+      <View style={styles.container}>
+        {this.aboutCommon.render(content, this.state.author)}
+        <Toast ref={e => (this.toast = e)} />
+      </View>
+    );
   }
 }
 
@@ -218,7 +243,6 @@ const STICKY_HEADER_HEIGHT = 70;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "black"
+    flex: 1
   }
 });

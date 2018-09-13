@@ -16,7 +16,7 @@ import ViewUtils from "../../util/ViewUtils";
 import { MORE_MENU } from "../../common/MoreMenu";
 import GlobalStyles from "../../../res/styles/GlobalStyles";
 import AboutCommon, { FLAG_ABOUT } from "./AboutCommon";
-import config from '../../../res/data/config.json'
+import config from "../../../res/data/config.json";
 import WebViewPage from "../WebViewPage";
 export default class AboutPage extends Component {
   constructor(props) {
@@ -32,18 +32,19 @@ export default class AboutPage extends Component {
     };
   }
 
-  componentDidMount(){
-     this.aboutCommon.componentDidMount();
+  componentDidMount() {
+    this.aboutCommon.componentDidMount();
   }
 
-  updateState(dic){
+  updateState(dic) {
     this.setState(dic);
-}
+  }
   onClick(tab) {
     let TargetComponent,
       params = { menuType: tab };
     switch (tab) {
       case MORE_MENU.About_Author:
+        TargetComponent = "AboutMePage";
         break;
       case MORE_MENU.Website:
         TargetComponent = "WebViewPage";

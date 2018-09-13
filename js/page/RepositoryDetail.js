@@ -43,7 +43,7 @@ export default class RepositoryDetail extends Component {
     this.setState({
       url: this.text
     });
-    console.warn("---->", this.state.url);
+ 
   }
   onNavigationStateChange(e) {
     this.setState({

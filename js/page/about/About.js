@@ -86,6 +86,7 @@ export default class AboutPage extends Component {
   //   );
   // }
   render() {
+    // console.warn('--->',this.state.projectModels)
     let content = (
       <View style={{ flexDirection: "column" }}>
         {this.aboutCommon.renderRepository(this.state.projectModels)}
@@ -113,7 +114,7 @@ export default class AboutPage extends Component {
       </View>
     );
     return this.aboutCommon.render(content, {
-      name: "GitHub Popular",
+      name: "HughRnApp",
       description:
         "这是一个滴滴答答滴滴答答滴滴答答的描述这是一个滴滴答答滴滴答答滴滴答答的描述",
       avatar: "https://avatar.csdn.net/6/7/C/1_qq_38366777.jpg?1536042584",

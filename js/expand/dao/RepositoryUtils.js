@@ -21,6 +21,7 @@ export default class RepositoryUtils {
     for (var value of this.itemMap.values()) {
       arr.push(value);
     }
+    //这个utils由aboutCommon中使用,再去通知很精妙
     this.aboutCommon.onNotifyDataChanged(arr);
   }
   /**

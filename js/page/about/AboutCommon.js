@@ -54,7 +54,6 @@ export default class AboutCommon {
    * @param {*} items  改变的数据
    */
   onNotifyDataChanged(items) {
-    console.warn('---->')
     this.updateFavorite(items);
   }
   /**
@@ -80,7 +79,7 @@ export default class AboutCommon {
         item: data.item ? data.item : data
       });
     }
-    console.warn('---->projecModels',projectModels)
+
     this.updateState({
       projectModels: projectModels
     });
@@ -96,9 +95,9 @@ export default class AboutCommon {
    */
   onFavorite(item, isFavorite) {
     if (isFavorite) {
-      favoriteDao.saveFavoriteItem(item.id.toString(), JSON.stringify(item));
+      this.favoriteDao.saveFavoriteItem(item.id.toString(), JSON.stringify(item));
     } else {
-      favoriteDao.removeFavoriteItem(item.id.toString());
+      this.favoriteDao.removeFavoriteItem(item.id.toString());
     }
   }
 

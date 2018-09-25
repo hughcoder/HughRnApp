@@ -8,6 +8,7 @@ import PopularPage from "../page/PopularPage";
 import AboutPage from "../page/about/About";
 import WebViewPage from "../page/WebViewPage";
 import AboutMePage from "../page/about/AboutMePage";
+import SearchPage from '../page/SearchPage'
 
 export default (AppNavigator = StackNavigator(
   {
@@ -34,7 +35,10 @@ export default (AppNavigator = StackNavigator(
     },
     AboutMePage: {
       screen: AboutMePage
-    }
+    },
+    SearchPage:{
+      screen:SearchPage
+    },
   },
   {
     navigationOptions: {

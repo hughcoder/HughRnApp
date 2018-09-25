@@ -14,7 +14,8 @@ import {
   TextInput,
   ListView,
   RefreshControl,
-  DeviceEventEmitter
+  DeviceEventEmitter,
+  TouchableOpacity
 } from "react-native";
 
 import DataRepository, { FLAG_STORAGE } from "../expand/dao/DataRepository";
@@ -57,6 +58,26 @@ export default class PopularPage extends Component {
       });
   }
 
+  renderRightButton() {
+    return (
+      <View>
+        <TouchableOpacity
+          onPress={() => {
+            this.props.navigation.navigate("SearchPage", {
+              ...this.props
+            });
+          }}
+          style={{ padding: 5, marginRight: 8 }}
+        >
+          <Image
+            source={require("../../res/images/ic_search_white_48pt.png")}
+            style={{ width: 24, height: 24 }}
+          />
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
   render() {
     let content =
       this.state.languages.length > 0 ? (
@@ -88,6 +109,7 @@ export default class PopularPage extends Component {
           title="最热"
           style={{ backgroundColor: "#2196F3" }}
           statusBar={{ backgroundColor: "#2196F3" }}
+          rightButton={this.renderRightButton()}
         />
         {content}
       </View>

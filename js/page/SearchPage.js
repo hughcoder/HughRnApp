@@ -16,7 +16,8 @@ import {
   RefreshControl,
   DeviceEventEmitter,
   Platform,
-  TouchableOpacity
+  TouchableOpacity,
+  ActivityIndicator
 } from "react-native";
 import RepositoryCell from "../common/RepositoryCell";
 import Toast, { DURATION } from "react-native-easy-toast";
@@ -28,6 +29,7 @@ import ProjectModel from "../model/ProjectModel";
 import LanguageDao, { FLAG_LANGUAGE } from "../expand/dao/LanguageDao";
 import FavoriteDao from "../expand/dao/FavoriteDao";
 import Utils from "../util/Utils";
+import makeCancelable from "../util/Cancelable";
 const URL = "https://api.github.com/search/repositories?q=";
 const QUERY_STR = "&sort=stars";
 
@@ -37,9 +39,13 @@ export default class SearchPage extends Component {
     this.favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular);
     this.dataRepository = new DataRepository(FLAG_STORAGE.flag_popular);
     this.favoriteKeys = [];
+    this.keys = [];
+    this.languageDao = new LanguageDao(FLAG_LANGUAGE.flag_key);
+    this.isKeyChange = false;
     this.state = {
       rightButtonText: "搜索",
       isLoading: false,
+      showBottomButton: false,
       dataSource: new ListView.DataSource({
         rowHasChanged: (r1, r2) => {
           r1 !== r2;
@@ -47,15 +53,33 @@ export default class SearchPage extends Component {
       })
     };
   }
-  componentDidMount() {}
+  componentDidMount() {
+    this.initKeys();
+  }
+  componentWillUnmount() {
+    if (this.isKeyChange) {
+      DeviceEventEmitter.emit("ACTION_HOME", ACTION_HOME.A_RESTART);
+    }
+    this.cancelable && this.cancelable.cancel();
+  }
+
+  /**
+   * 获取所以标签 同步方法去调用
+   */
+  async initKeys() {
+    this.keys = await this.languageDao.fetch();
+  }
 
   loadData() {
     this.updateState({
-      isLoading: true
+      isLoading: true,
+      showBottomButton: false
     });
+    this.cancelable = makeCancelable(
+      this.dataRepository.fetchNetRepository(this.genFetchUrl(this.inputKey))
+    );
 
-    this.dataRepository
-      .fetchNetRepository(this.genFetchUrl(this.inputKey))
+    this.cancelable.promise
       .then(responseData => {
         if (!this || !responseData || responseData.length === 0) {
           this.toast.show(this.inputKey + "什么都没找到", DURATION.LENGTH_LONG);
@@ -68,7 +92,8 @@ export default class SearchPage extends Component {
       .catch(e => {
         this.updateState({
           isLoading: false,
-          rightButtonText: "搜索"
+          rightButtonText: "搜索",
+          showBottomButton: false
         });
       });
   }
@@ -87,6 +112,7 @@ export default class SearchPage extends Component {
   }
 
   getFavoriteKeys() {
+    this.updateState({ showBottomButton: true });
     this.favoriteDao
       .getFavoriteKeys()
       .then(keys => {
@@ -129,6 +155,7 @@ export default class SearchPage extends Component {
       this.loadData();
     } else {
       this.updateState({ rightButtonText: "搜索", isLoading: false });
+      this.cancelable.cancel();
     }
   }
 
@@ -147,6 +174,51 @@ export default class SearchPage extends Component {
         onFavorite={(item, isFavorite) => this.onFavorite(item, isFavorite)}
       />
     );
+  }
+
+  /**
+   * 收藏单击回调函数
+   */
+  onFavorite(item, isFavorite) {
+    if (isFavorite) {
+      this.favoriteDao.saveFavoriteItem(
+        item.id.toString(),
+        JSON.stringify(item)
+      );
+    } else {
+      this.favoriteDao.removeFavoriteItem(item.id.toString());
+    }
+  }
+
+  /**
+   * 添加标签
+   */
+  saveKey() {
+    let key = this.inputKey;
+    if (this.checkKeyIsExist(this.keys, key)) {
+      this.toast.show(key + "已经存在", DURATION.LENGTH_LONG);
+    } else {
+      key = {
+        path: key,
+        name: key,
+        checked: true
+      };
+      this.keys.unshift(key);
+      this.languageDao.save(this.keys);
+      this.toast.show(key.name + "保存成功", DURATION.LENGTH_LONG);
+      this.isKeyChange = true;
+    }
+  }
+  /**
+   * 检查key是否存在于keys中
+   * @param keys
+   * @param key
+   */
+  checkKeyIsExist(keys, key) {
+    for (let i = 0, l = keys.length; i < l; i++) {
+      if (key.toLowerCase() === keys[i].name.toLowerCase()) return true;
+    }
+    return false;
   }
 
   renderNavBar() {
@@ -191,22 +263,49 @@ export default class SearchPage extends Component {
 
   render() {
     let statusBar = null;
-    let listView = (
+    let listView = !this.state.isLoading ? (
       <ListView
         dataSource={this.state.dataSource}
         renderRow={e => this.renderRow(e)}
       />
-    );
+    ) : null;
     if (Platform.OS === "ios") {
       statusBar = (
         <View style={[styles.statusBar, { backgroundColor: "#2196F3" }]} />
       );
     }
+    let indivatorView = this.state.isLoading ? (
+      <ActivityIndicator
+        animating={this.state.isLoading}
+        style={styles.centering}
+        size="large"
+      />
+    ) : null;
+    let resultView = (
+      <View style={{ flex: 1 }}>
+        {indivatorView}
+        {listView}
+      </View>
+    );
+
+    let bottomButton = this.state.showBottomButton ? (
+      <TouchableOpacity
+        style={[styles.bottomButton, { backgroundColor: "#2196F3" }]}
+        onPress={() => {
+          this.saveKey();
+        }}
+      >
+        <View style={{ justifyContent: "center" }}>
+          <Text style={styles.title}>添加标签</Text>
+        </View>
+      </TouchableOpacity>
+    ) : null;
     return (
       <View style={GlobalStyles.root_container}>
         {statusBar}
         {this.renderNavBar()}
-        {listView}
+        {resultView}
+        {bottomButton}
         <Toast ref={toast => (this.toast = toast)} />
       </View>
     );
@@ -237,5 +336,21 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: "white",
     fontWeight: "500"
+  },
+  centering: {
+    alignItems: "center",
+    justifyContent: "center",
+    flex: 1
+  },
+  bottomButton: {
+    alignItems: "center",
+    justifyContent: "center",
+    opacity: 0.9,
+    height: 40,
+    position: "absolute",
+    left: 10,
+    top: GlobalStyles.window_height - 45,
+    right: 10,
+    borderRadius: 3
   }
 });
